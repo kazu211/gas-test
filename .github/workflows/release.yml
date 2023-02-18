@@ -34,9 +34,11 @@ jobs:
       - name: Deploy (Only first time)
         if: env.RUNNING_VERSION == '@HEAD'
         run: |
-          echo "first time!!"
-          echo $RUNNING_VERSION
+          echo clasp deploy -d $GITHUB_REF_NAME
+          DEPLOY_ID=$( clasp deployments | tail -n 1 | awk -F ' ' '{print $2}' )
+          echo clasp deploy -d $GITHUB_REF_NAME -i ${DEPLOY_ID}
       - name: Deploy
         if: env.RUNNING_VERSION != '@HEAD'
         run: |
-          echo "Not first time!!"
+          DEPLOY_ID=$( clasp deployments | tail -n 1 | awk -F ' ' '{print $2}' )
+          echo clasp deploy -d $GITHUB_REF_NAME -i ${DEPLOY_ID}
