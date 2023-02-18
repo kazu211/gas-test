@@ -2,8 +2,8 @@ name: CD (Build and deploy to production)
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v*
   workflow_dispatch:
 jobs:
   deploy:
@@ -34,11 +34,9 @@ jobs:
       - name: Deploy (Only first time)
         if: env.RUNNING_VERSION == '@HEAD'
         run: |
-          echo clasp deploy -d $GITHUB_REF_NAME
-          DEPLOY_ID=$( clasp deployments | tail -n 1 | awk -F ' ' '{print $2}' )
-          echo clasp deploy -d $GITHUB_REF_NAME -i ${DEPLOY_ID}
+          clasp deploy -d $GITHUB_REF_NAME
       - name: Deploy
         if: env.RUNNING_VERSION != '@HEAD'
         run: |
           DEPLOY_ID=$( clasp deployments | tail -n 1 | awk -F ' ' '{print $2}' )
-          echo clasp deploy -d $GITHUB_REF_NAME -i ${DEPLOY_ID}
+          clasp deploy -d $GITHUB_REF_NAME -i ${DEPLOY_ID}
