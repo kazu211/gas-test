@@ -32,11 +32,11 @@ jobs:
       - name: Publish
         run: clasp push
       - name: Deploy (Only first time)
-        if: $RUNNING_VERSION == '@HEAD'
+        if: env.RUNNING_VERSION == '@HEAD'
         run: |
           echo "first time!!"
           echo $RUNNING_VERSION
       - name: Deploy
-        if: $RUNNING_VERSION != '@HEAD'
+        if: env.RUNNING_VERSION != '@HEAD'
         run: |
           echo "Not first time!!"
