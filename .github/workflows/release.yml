@@ -2,8 +2,8 @@ name: CD (Build and deploy to production)
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   deploy:
@@ -26,6 +26,11 @@ jobs:
       - name: Create clasp.json
         run: |
           echo \{\"scriptId\":\"${{ secrets.SCRIPT_ID }}\",\"rootDir\":\"./src\"\} > ./.clasp.json
-      - name: Deploy
+      - name: Get running version
         run: |
-          clasp push
+          echo RUNNING_VERSION="$( clasp deployments | tail -n 1 | awk -F ' ' '{print $3}' )" >> $GITHUB_ENV
+      - name: echo
+        run: |
+          echo $RUNNING_VERSION
+      - name: Publish
+        run: clasp push
